@@ -89,12 +89,15 @@
 }
 :root[data-theme="macos"] .w-btn[data-act="close"] {
   background: #ff5f57;
+  order: 0;
 }
 :root[data-theme="macos"] .w-btn[data-act="min"] {
   background: #febc2e;
+  order: 1;
 }
 :root[data-theme="macos"] .w-btn[data-act="max"] {
   background: #28c840;
+  order: 2;
 }
 :root[data-theme="macos"] .w-title .dot {
   display: none;
