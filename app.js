@@ -422,12 +422,29 @@ function openFile(id) {
       </ul>
     `;
   } else if (f.type === "pdf" || f.type === "link") {
-    body.innerHTML = `
-      <h2>${escapeHtml(f.name)}</h2>
-      <p>${escapeHtml(f.note || "")}</p>
-      <p><a href="${escapeHtml(f.href)}" target="_blank" rel="noreferrer">Open</a></p>
-      <p style="opacity:.7;">Tip: if you want this to open inside the window, we can embed it with an <code>&lt;iframe&gt;</code>.</p>
-    `;
+    const href = String(f.href || "");
+    const isMailto = href.startsWith("mailto:");
+
+    if (isMailto) {
+      // mailto can't be embedded meaningfully
+      body.innerHTML = `
+        <h2>${escapeHtml(f.name)}</h2>
+        <p>${escapeHtml(f.note || "")}</p>
+        <p><a href="${escapeHtml(href)}">Open email</a></p>
+      `;
+    } else {
+      body.classList.add("embed");
+      body.innerHTML = `
+        <div class="embedHeader">
+          <div>
+            <div style="font-weight:700;">${escapeHtml(f.name)}</div>
+            ${f.note ? `<div style="color: rgba(255,255,255,.7); font-size:12px; margin-top:2px;">${escapeHtml(f.note)}</div>` : ""}
+          </div>
+          <a class="tb-btn" style="text-decoration:none;" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">Open in new tab</a>
+        </div>
+        <iframe class="embedFrame" src="${escapeHtml(href)}" title="${escapeHtml(f.name)}" loading="lazy"></iframe>
+      `;
+    }
   } else if (f.type === "text") {
     body.innerHTML = `
       <h2>${escapeHtml(f.name)}</h2>
