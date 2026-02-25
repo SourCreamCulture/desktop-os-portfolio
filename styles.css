@@ -94,11 +94,11 @@ body {
   height: 44px;
   display: grid;
   place-items: center;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
-  font-size: 22px;
+  /* clean desktop: no white tile behind icons */
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 26px;
 }
 
 .icon .label {
@@ -113,6 +113,12 @@ body {
 #windows {
   position: absolute;
   inset: 0 0 var(--taskbarH) 0;
+  /* Important: allow desktop icon clicks when no windows are under the cursor */
+  pointer-events: none;
+}
+
+.window {
+  pointer-events: auto;
 }
 
 .window {
