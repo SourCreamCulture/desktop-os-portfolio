@@ -335,6 +335,8 @@ function makeDraggable(winEl) {
   };
 
   bar.addEventListener("pointerdown", (e) => {
+    // Don't start dragging when clicking window control buttons
+    if (e.target.closest(".w-controls")) return;
     if (e.button !== 0) return;
     bar.setPointerCapture(e.pointerId);
     onDown(e);
