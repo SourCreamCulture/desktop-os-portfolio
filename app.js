@@ -732,15 +732,17 @@ elStartBtn.addEventListener("click", (e) => {
   toggleStartMenu();
 });
 
+const THEMES = new Set(["macos", "windows", "linux", "nebula", "mono", "sunset"]);
+
 function setTheme(theme) {
-  const t = theme || "nebula";
+  const t = THEMES.has(theme) ? theme : "macos";
   document.documentElement.dataset.theme = t;
   localStorage.setItem("dallinos-theme", t);
 }
 
 function loadTheme() {
   const saved = localStorage.getItem("dallinos-theme");
-  setTheme(saved || "nebula");
+  setTheme(saved || "macos");
 }
 
 elStartMenu.addEventListener("click", (e) => {

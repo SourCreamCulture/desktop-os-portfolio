@@ -19,6 +19,35 @@
 }
 
 /* Themes */
+:root[data-theme="macos"] {
+  --bg1: #070a12;
+  --bg2: #0a152e;
+  --bg3: rgba(0, 212, 255, 0.12);
+  --accent: #00d4ff;
+  --accent2: #7c5cff;
+  --radius: 16px;
+}
+
+:root[data-theme="windows"] {
+  --bg1: #040b18;
+  --bg2: #0b2a5b;
+  --bg3: rgba(0, 120, 215, 0.14);
+  --accent: #0078d7;
+  --accent2: #00a2ff;
+  --radius: 10px;
+}
+
+:root[data-theme="linux"] {
+  /* GNOME-ish / Ubuntu-ish */
+  --bg1: #0b0610;
+  --bg2: #1d0b24;
+  --bg3: rgba(233, 84, 32, 0.14);
+  --accent: #e95420;
+  --accent2: #7c5cff;
+  --radius: 14px;
+}
+
+/* Back-compat: old theme names (if saved in localStorage) */
 :root[data-theme="nebula"] {
   --bg1: #05070d;
   --bg2: #0b1630;
@@ -26,7 +55,6 @@
   --accent: #7c5cff;
   --accent2: #00d4ff;
 }
-
 :root[data-theme="mono"] {
   --bg1: #06070a;
   --bg2: #101218;
@@ -34,13 +62,55 @@
   --accent: #ffffff;
   --accent2: #b9c0ff;
 }
-
 :root[data-theme="sunset"] {
   --bg1: #0b0610;
   --bg2: #240b2b;
   --bg3: rgba(255, 128, 0, 0.12);
   --accent: #ff4d9d;
   --accent2: #ffb86b;
+}
+
+/* macOS window chrome */
+:root[data-theme="macos"] .w-controls {
+  order: -1;
+  margin-right: 8px;
+}
+:root[data-theme="macos"] .w-title {
+  justify-content: center;
+}
+:root[data-theme="macos"] .w-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 0;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.18);
+}
+:root[data-theme="macos"] .w-btn[data-act="close"] {
+  background: #ff5f57;
+}
+:root[data-theme="macos"] .w-btn[data-act="min"] {
+  background: #febc2e;
+}
+:root[data-theme="macos"] .w-btn[data-act="max"] {
+  background: #28c840;
+}
+:root[data-theme="macos"] .w-title .dot {
+  display: none;
+}
+
+/* Windows-ish chrome */
+:root[data-theme="windows"] .w-titlebar {
+  border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
+}
+:root[data-theme="windows"] .w-btn {
+  border-radius: 8px;
+}
+
+/* Linux-ish chrome (slightly flatter, chunkier taskbar) */
+:root[data-theme="linux"] #taskbar {
+  background: rgba(10, 10, 16, 0.78);
 }
 
 * {
