@@ -77,6 +77,14 @@ body {
   padding: 10px;
   user-select: none;
   cursor: default;
+
+  /* reset default button styling (fixes the big white tiles) */
+  background: transparent;
+  border: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-tap-highlight-color: transparent;
 }
 .icon:focus {
   outline: 2px solid rgba(124, 92, 255, 0.65);
