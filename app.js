@@ -133,6 +133,7 @@ const files = [
     type: "pdf",
     name: "Resume.pdf",
     glyph: "📄",
+    icon: "./assets/icons/resume.svg",
     href: "./assets/resume.pdf",
     note: "Bundled locally with this site so it never breaks when you move domains/hosts.",
   },
@@ -141,6 +142,7 @@ const files = [
     type: "text",
     name: "About.txt",
     glyph: "👋",
+    icon: "./assets/icons/about.svg",
     body: `Software engineering student at BYU-Idaho building modern web + mobile apps.\n\nCurrently seeking internship opportunities for Summer 2026.\n\nThis site is an OS-style desktop: each project is a “file” and opens in its own window.`,
   },
   {
@@ -148,6 +150,7 @@ const files = [
     type: "link",
     name: "Contact.url",
     glyph: "✉️",
+    icon: "./assets/icons/contact.svg",
     href: "mailto:dallinheath@gmail.com",
     note: "Email: dallinheath@gmail.com",
   },
@@ -156,6 +159,7 @@ const files = [
     type: "link",
     name: "LinkedIn.url",
     glyph: "🔗",
+    icon: "./assets/icons/linkedin.svg",
     href: "https://www.linkedin.com/in/dallin-bland-701a56291",
     note: "LinkedIn profile",
   },
@@ -164,6 +168,7 @@ const files = [
     type: "link",
     name: "GitHub.url",
     glyph: "💻",
+    icon: "./assets/icons/github.svg",
     href: "https://github.com/SourCreamCulture",
     note: "GitHub profile",
   },
@@ -172,12 +177,14 @@ const files = [
     type: "folder",
     name: "Projects/",
     glyph: "🗂️",
+    icon: "./assets/icons/projects.svg",
   },
   {
     id: "terminal",
     type: "terminal",
     name: "Terminal.app",
     glyph: "⌨️",
+    icon: "./assets/icons/terminal.svg",
     note: "Tiny fake terminal (client-side) for vibes + navigation.",
   },
   {
@@ -185,6 +192,7 @@ const files = [
     type: "text",
     name: "README.txt",
     glyph: "❓",
+    icon: "./assets/icons/help.svg",
     body: `Tips:\n- Double-click icons to open\n- Drag windows by the title bar\n- Use the taskbar to switch\n- Start menu has the essentials\n- Press Cmd/Ctrl+K for Spotlight search\n\nWant this to feel more "real"? We can add:\n- right-click menu\n- window snapping\n- system notifications\n- themes`,
   },
 ];
@@ -218,8 +226,12 @@ function renderIcons() {
     btn.dataset.id = f.id;
     btn.setAttribute("aria-label", f.name);
 
+    const glyphHtml = f.icon
+      ? `<img class="glyphImg" src="${escapeHtml(f.icon)}" alt="" aria-hidden="true" />`
+      : `<div class="glyph" aria-hidden="true">${escapeHtml(f.glyph || "")}</div>`;
+
     btn.innerHTML = `
-      <div class="glyph" aria-hidden="true">${escapeHtml(f.glyph)}</div>
+      <div class="glyphWrap">${glyphHtml}</div>
       <div class="label">${escapeHtml(f.name)}</div>
     `;
 

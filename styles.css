@@ -89,16 +89,31 @@ body {
   background: rgba(124, 92, 255, 0.18);
 }
 
+.icon .glyphWrap {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
 .icon .glyph {
   width: 44px;
   height: 44px;
   display: grid;
   place-items: center;
-  /* clean desktop: no white tile behind icons */
   background: transparent;
   border: 0;
   box-shadow: none;
   font-size: 26px;
+}
+
+.icon .glyphImg {
+  width: 44px;
+  height: 44px;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
 }
 
 .icon .label {
