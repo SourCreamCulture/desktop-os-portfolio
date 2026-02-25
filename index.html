@@ -49,10 +49,28 @@
           Contact.url
         </button>
         <div class="sm-sep"></div>
+        <button class="sm-item" role="menuitem" data-open="terminal">
+          Terminal
+        </button>
+        <button class="sm-item" role="menuitem" data-action="spotlight">
+          Search (Spotlight)
+        </button>
+        <div class="sm-sep"></div>
         <button class="sm-item" role="menuitem" data-open="all-projects">
           Projects
         </button>
         <button class="sm-item" role="menuitem" data-open="help">Help</button>
+      </section>
+
+      <!-- Spotlight (Cmd/Ctrl+K) -->
+      <section id="spotlight" aria-label="Search" hidden>
+        <div class="sp-card" role="dialog" aria-modal="true" aria-label="Spotlight search">
+          <div class="sp-top">
+            <div class="sp-hint">Search files • Enter to open • Esc to close</div>
+            <input id="spotlightInput" class="sp-input" type="text" autocomplete="off" spellcheck="false" placeholder="Search…" />
+          </div>
+          <div id="spotlightResults" class="sp-results" aria-label="Search results"></div>
+        </div>
       </section>
     </main>
 

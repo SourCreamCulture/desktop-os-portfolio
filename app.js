@@ -174,11 +174,18 @@ const files = [
     glyph: "🗂️",
   },
   {
+    id: "terminal",
+    type: "terminal",
+    name: "Terminal.app",
+    glyph: "⌨️",
+    note: "Tiny fake terminal (client-side) for vibes + navigation.",
+  },
+  {
     id: "help",
     type: "text",
     name: "README.txt",
     glyph: "❓",
-    body: `Tips:\n- Double-click icons to open\n- Drag windows by the title bar\n- Use the taskbar to switch\n- Start menu has the essentials\n\nWant this to feel more "real"? We can add:\n- right-click menu\n- window snapping\n- terminal app\n- Spotlight-style search`,
+    body: `Tips:\n- Double-click icons to open\n- Drag windows by the title bar\n- Use the taskbar to switch\n- Start menu has the essentials\n- Press Cmd/Ctrl+K for Spotlight search\n\nWant this to feel more "real"? We can add:\n- right-click menu\n- window snapping\n- system notifications\n- themes`,
   },
 ];
 
@@ -189,6 +196,9 @@ const elTaskbarApps = document.getElementById("taskbarApps");
 const elClock = document.getElementById("clock");
 const elStartBtn = document.getElementById("startBtn");
 const elStartMenu = document.getElementById("startMenu");
+const elSpotlight = document.getElementById("spotlight");
+const elSpotlightInput = document.getElementById("spotlightInput");
+const elSpotlightResults = document.getElementById("spotlightResults");
 
 function escapeHtml(str) {
   return String(str)
@@ -430,6 +440,109 @@ function openFile(id) {
       ${f.note ? `<p>${escapeHtml(f.note)}</p>` : ""}
       <p><a class="tb-btn" style="display:inline-flex; align-items:center; text-decoration:none;" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${escapeHtml(label)}</a></p>
     `;
+  } else if (f.type === "terminal") {
+    body.innerHTML = `
+      <div class="term" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">
+        <div class="termOut" style="white-space:pre-wrap; line-height:1.55; color: rgba(255,255,255,.82);"></div>
+        <div class="termRow" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+          <span style="color: rgba(255,255,255,.55);">dallin@dallinos</span>
+          <span style="color: rgba(124,92,255,.9);">~</span>
+          <span style="color: rgba(255,255,255,.55);">$</span>
+          <input class="termIn" type="text" spellcheck="false" autocomplete="off" style="flex:1; background: transparent; border: 0; outline: none; color: rgba(255,255,255,.92); font: inherit; padding: 6px 0;" />
+        </div>
+        <div style="margin-top:10px; color: rgba(255,255,255,.55); font-size:12px;">
+          Try: <code>help</code>, <code>ls</code>, <code>open about</code>, <code>open resume</code>, <code>clear</code>
+        </div>
+      </div>
+    `;
+
+    const out = body.querySelector(".termOut");
+    const input = body.querySelector(".termIn");
+    const history = [];
+    let hIndex = 0;
+
+    const println = (s = "") => {
+      out.textContent += (out.textContent ? "\n" : "") + s;
+      out.scrollTop = out.scrollHeight;
+      body.scrollTop = body.scrollHeight;
+    };
+
+    const run = (raw) => {
+      const cmd = String(raw || "").trim();
+      if (!cmd) return;
+      history.push(cmd);
+      hIndex = history.length;
+
+      println(`$ ${cmd}`);
+
+      const [head, ...rest] = cmd.split(/\s+/);
+      const arg = rest.join(" ").trim();
+
+      if (head === "help") {
+        println("Commands:\n- help\n- ls\n- open <id|name>\n- clear\n- date");
+        return;
+      }
+
+      if (head === "ls") {
+        const list = files
+          .filter((x) => x.type !== "folder")
+          .map((x) => `${x.glyph}  ${x.name}  (${x.id})`)
+          .join("\n");
+        println(list || "(empty)");
+        return;
+      }
+
+      if (head === "date") {
+        println(new Date().toString());
+        return;
+      }
+
+      if (head === "clear") {
+        out.textContent = "";
+        return;
+      }
+
+      if (head === "open") {
+        if (!arg) {
+          println("Usage: open <id|name>");
+          return;
+        }
+        const needle = arg.toLowerCase();
+        const target = files.find(
+          (x) =>
+            x.id.toLowerCase() === needle || x.name.toLowerCase() === needle,
+        );
+        if (!target) {
+          println(`Not found: ${arg}`);
+          return;
+        }
+        openFile(target.id);
+        return;
+      }
+
+      println(`Command not found: ${head} (try 'help')`);
+    };
+
+    // welcome
+    println("DallinOS Terminal — client-side only. No real shell access.");
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const v = input.value;
+        input.value = "";
+        run(v);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        hIndex = Math.max(0, hIndex - 1);
+        input.value = history[hIndex] || "";
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        hIndex = Math.min(history.length, hIndex + 1);
+        input.value = history[hIndex] || "";
+      }
+    });
+
+    setTimeout(() => input.focus(), 0);
   } else if (f.type === "text") {
     body.innerHTML = `
       <h2>${escapeHtml(f.name)}</h2>
@@ -523,6 +636,69 @@ function tickClock() {
   elClock.textContent = `${d} • ${t}`;
 }
 
+// Spotlight
+let spotlightIndex = 0;
+let spotlightHits = [];
+
+function openSpotlight(prefill = "") {
+  elSpotlight.hidden = false;
+  spotlightIndex = 0;
+  elSpotlightInput.value = prefill;
+  renderSpotlightResults();
+  setTimeout(() => elSpotlightInput.focus(), 0);
+}
+
+function closeSpotlight() {
+  elSpotlight.hidden = true;
+}
+
+function scoreHit(f, q) {
+  const name = `${f.name} ${f.id}`.toLowerCase();
+  if (!q) return 1;
+  if (name === q) return 100;
+  if (name.startsWith(q)) return 50;
+  if (name.includes(q)) return 10;
+  return 0;
+}
+
+function renderSpotlightResults() {
+  const q = elSpotlightInput.value.trim().toLowerCase();
+
+  spotlightHits = files
+    .filter((f) => f.type !== "folder")
+    .map((f) => ({ f, s: scoreHit(f, q) }))
+    .filter((x) => x.s > 0)
+    .sort((a, b) => b.s - a.s || a.f.name.localeCompare(b.f.name))
+    .slice(0, 12)
+    .map((x) => x.f);
+
+  if (spotlightIndex >= spotlightHits.length) spotlightIndex = 0;
+
+  elSpotlightResults.innerHTML = spotlightHits.length
+    ? spotlightHits
+        .map((f, i) => {
+          const sub = f.type === "project" ? "Project" : f.type.toUpperCase();
+          return `
+            <button class="sp-item ${i === spotlightIndex ? "active" : ""}" type="button" data-open="${escapeHtml(f.id)}">
+              <div class="sp-glyph" aria-hidden="true">${escapeHtml(f.glyph)}</div>
+              <div class="sp-meta">
+                <div class="sp-name">${escapeHtml(f.name)}</div>
+                <div class="sp-sub">${escapeHtml(sub)} • ${escapeHtml(f.id)}</div>
+              </div>
+            </button>
+          `;
+        })
+        .join("")
+    : `<div style="padding:12px; color: rgba(255,255,255,.65);">No matches.</div>`;
+
+  elSpotlightResults.querySelectorAll("[data-open]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      openFile(btn.dataset.open);
+      closeSpotlight();
+    });
+  });
+}
+
 function closeStartMenu() {
   elStartMenu.hidden = true;
   elStartBtn.setAttribute("aria-expanded", "false");
@@ -541,10 +717,18 @@ elStartBtn.addEventListener("click", (e) => {
 });
 
 elStartMenu.addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-open]");
-  if (!btn) return;
-  openFile(btn.dataset.open);
-  closeStartMenu();
+  const openBtn = e.target.closest("[data-open]");
+  if (openBtn) {
+    openFile(openBtn.dataset.open);
+    closeStartMenu();
+    return;
+  }
+
+  const actionBtn = e.target.closest("[data-action]");
+  if (actionBtn?.dataset.action === "spotlight") {
+    closeStartMenu();
+    openSpotlight();
+  }
 });
 
 // Desktop click clears selection / closes start menu
@@ -553,14 +737,60 @@ elDesktop.addEventListener("click", () => {
   closeStartMenu();
 });
 
-// Keyboard: Enter opens selected icon
+// Keyboard
 document.addEventListener("keydown", (e) => {
+  // Spotlight hotkey
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    openSpotlight();
+    closeStartMenu();
+    return;
+  }
+
+  if (!elSpotlight.hidden) {
+    if (e.key === "Escape") {
+      closeSpotlight();
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      spotlightIndex = Math.min(spotlightHits.length - 1, spotlightIndex + 1);
+      renderSpotlightResults();
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      spotlightIndex = Math.max(0, spotlightIndex - 1);
+      renderSpotlightResults();
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const hit = spotlightHits[spotlightIndex];
+      if (hit) openFile(hit.id);
+      closeSpotlight();
+      return;
+    }
+  }
+
+  // Enter opens selected desktop icon
   if (e.key === "Enter" && state.selectedIconId) {
     openFile(state.selectedIconId);
   }
+
   if (e.key === "Escape") {
     closeStartMenu();
   }
+});
+
+elSpotlightInput?.addEventListener("input", () => {
+  spotlightIndex = 0;
+  renderSpotlightResults();
+});
+
+elSpotlight?.addEventListener("click", (e) => {
+  // click outside card closes
+  if (e.target === elSpotlight) closeSpotlight();
 });
 
 renderIcons();
