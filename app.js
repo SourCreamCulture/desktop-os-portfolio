@@ -14,6 +14,7 @@ const files = [
     type: "project",
     name: "LOQN.app",
     glyph: "🧠",
+    icon: "./assets/icons/loqn.svg",
     year: "2025",
     stack: ["Swift", "API", "NFC", "Firebase"],
     summary:
@@ -44,6 +45,7 @@ const files = [
     type: "project",
     name: "SpinFlix.app",
     glyph: "🎬",
+    icon: "./assets/icons/spinflix.svg",
     year: "2025",
     stack: ["Swift", "TMDB API", "AI", "iCloud"],
     summary:
@@ -74,6 +76,7 @@ const files = [
     type: "project",
     name: "RexburgHousing.sql",
     glyph: "🏠",
+    icon: "./assets/icons/rexburg.svg",
     year: "2024",
     stack: ["HTML", "CSS", "SQL"],
     summary:
@@ -103,6 +106,7 @@ const files = [
     type: "project",
     name: "PterodactylMarket.md",
     glyph: "🦖",
+    icon: "./assets/icons/pterodactyl.svg",
     year: "2023",
     stack: ["React", "Node.js", "MongoDB", "TailwindCSS"],
     summary:
