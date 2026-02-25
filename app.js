@@ -423,28 +423,13 @@ function openFile(id) {
     `;
   } else if (f.type === "pdf" || f.type === "link") {
     const href = String(f.href || "");
-    const isMailto = href.startsWith("mailto:");
+    const label = href.startsWith("mailto:") ? "Open email" : "Open in new tab";
 
-    if (isMailto) {
-      // mailto can't be embedded meaningfully
-      body.innerHTML = `
-        <h2>${escapeHtml(f.name)}</h2>
-        <p>${escapeHtml(f.note || "")}</p>
-        <p><a href="${escapeHtml(href)}">Open email</a></p>
-      `;
-    } else {
-      body.classList.add("embed");
-      body.innerHTML = `
-        <div class="embedHeader">
-          <div>
-            <div style="font-weight:700;">${escapeHtml(f.name)}</div>
-            ${f.note ? `<div style="color: rgba(255,255,255,.7); font-size:12px; margin-top:2px;">${escapeHtml(f.note)}</div>` : ""}
-          </div>
-          <a class="tb-btn" style="text-decoration:none;" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">Open in new tab</a>
-        </div>
-        <iframe class="embedFrame" src="${escapeHtml(href)}" title="${escapeHtml(f.name)}" loading="lazy"></iframe>
-      `;
-    }
+    body.innerHTML = `
+      <h2>${escapeHtml(f.name)}</h2>
+      ${f.note ? `<p>${escapeHtml(f.note)}</p>` : ""}
+      <p><a class="tb-btn" style="display:inline-flex; align-items:center; text-decoration:none;" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${escapeHtml(label)}</a></p>
+    `;
   } else if (f.type === "text") {
     body.innerHTML = `
       <h2>${escapeHtml(f.name)}</h2>
