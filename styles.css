@@ -345,6 +345,11 @@ h3 {
   z-index: 9999;
 }
 
+/* Ensure the HTML "hidden" attribute actually hides the overlay */
+#spotlight[hidden] {
+  display: none;
+}
+
 .sp-card {
   width: min(680px, calc(100vw - 24px));
   border-radius: 18px;
