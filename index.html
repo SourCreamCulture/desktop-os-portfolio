@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dallin Bland — Desktop</title>
+    <meta
+      name="description"
+      content="OS-style desktop portfolio for Dallin Bland."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <noscript
+      >This site needs JavaScript enabled (it’s basically a tiny desktop
+      OS).</noscript
+    >
+
+    <main id="desktop" aria-label="Desktop">
+      <div id="wallpaper" aria-hidden="true"></div>
+
+      <section id="iconGrid" aria-label="Desktop icons"></section>
+
+      <section id="windows" aria-label="Open windows"></section>
+
+      <footer id="taskbar" aria-label="Taskbar">
+        <button
+          id="startBtn"
+          class="tb-btn"
+          aria-haspopup="menu"
+          aria-expanded="false"
+        >
+          Start
+        </button>
+        <div id="taskbarApps" class="tb-apps" aria-label="Open apps"></div>
+        <div class="tb-spacer"></div>
+        <div id="clock" class="tb-clock" aria-label="Clock"></div>
+      </footer>
+
+      <section id="startMenu" role="menu" aria-label="Start menu" hidden>
+        <div class="sm-title">DallinOS</div>
+        <button class="sm-item" role="menuitem" data-open="about">
+          About.txt
+        </button>
+        <button class="sm-item" role="menuitem" data-open="resume">
+          Resume.pdf
+        </button>
+        <button class="sm-item" role="menuitem" data-open="contact">
+          Contact.url
+        </button>
+        <div class="sm-sep"></div>
+        <button class="sm-item" role="menuitem" data-open="all-projects">
+          Projects
+        </button>
+        <button class="sm-item" role="menuitem" data-open="help">Help</button>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

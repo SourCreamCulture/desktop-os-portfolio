@@ -1,0 +1,321 @@
+:root {
+  --bg1: #05070d;
+  --bg2: #0b1630;
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass2: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.7);
+  --shadow: 0 14px 50px rgba(0, 0, 0, 0.45);
+  --border: 1px solid rgba(255, 255, 255, 0.16);
+  --accent: #7c5cff;
+  --accent2: #00d4ff;
+  --taskbarH: 48px;
+  --radius: 14px;
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  overflow: hidden;
+}
+
+#desktop {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+#wallpaper {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      1200px 900px at 15% 15%,
+      rgba(124, 92, 255, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 700px at 80% 30%,
+      rgba(0, 212, 255, 0.2),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 700px at 60% 85%,
+      rgba(0, 255, 170, 0.12),
+      transparent 55%
+    ),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+#iconGrid {
+  position: absolute;
+  inset: 18px 18px calc(var(--taskbarH) + 18px) 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-auto-rows: 110px;
+  gap: 10px;
+  align-content: start;
+  padding: 8px;
+}
+
+.icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 12px;
+  padding: 10px;
+  user-select: none;
+  cursor: default;
+}
+.icon:focus {
+  outline: 2px solid rgba(124, 92, 255, 0.65);
+  outline-offset: 2px;
+}
+.icon:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.icon.selected {
+  background: rgba(124, 92, 255, 0.18);
+}
+
+.icon .glyph {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+  font-size: 22px;
+}
+
+.icon .label {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  word-break: break-word;
+}
+
+#windows {
+  position: absolute;
+  inset: 0 0 var(--taskbarH) 0;
+}
+
+.window {
+  position: absolute;
+  width: min(720px, calc(100vw - 60px));
+  height: min(520px, calc(100vh - var(--taskbarH) - 60px));
+  left: 60px;
+  top: 40px;
+  background: rgba(20, 22, 35, 0.62);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.window[data-max="true"] {
+  left: 10px !important;
+  top: 10px !important;
+  width: calc(100vw - 20px) !important;
+  height: calc(100vh - var(--taskbarH) - 20px) !important;
+}
+
+.w-titlebar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.04)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: grab;
+}
+
+.w-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+.w-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(124, 92, 255, 0.85);
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
+}
+.w-title .name {
+  font-weight: 650;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.w-controls {
+  display: flex;
+  gap: 8px;
+}
+.w-btn {
+  width: 34px;
+  height: 28px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  cursor: pointer;
+}
+.w-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.w-body {
+  height: calc(100% - 44px);
+  overflow: auto;
+  padding: 14px 16px 20px;
+}
+
+.w-body h1,
+h2,
+h3 {
+  margin: 0 0 10px;
+}
+.w-body p {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+.w-body a {
+  color: #b7a7ff;
+}
+.w-body code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+.w-body .pill {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0 8px 8px 0;
+  font-size: 12px;
+}
+
+#taskbar {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--taskbarH);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  background: rgba(14, 16, 26, 0.72);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.tb-btn {
+  border-radius: 12px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  cursor: pointer;
+}
+.tb-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.tb-apps {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  overflow: auto;
+}
+.tb-app {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tb-app.active {
+  border-color: rgba(124, 92, 255, 0.6);
+}
+
+.tb-spacer {
+  flex: 1;
+}
+.tb-clock {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 8px;
+}
+
+#startMenu {
+  position: absolute;
+  left: 10px;
+  bottom: calc(var(--taskbarH) + 10px);
+  width: 260px;
+  background: rgba(18, 20, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+.sm-title {
+  padding: 12px 14px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.sm-item {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.sm-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.sm-sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Mobile tweaks */
+@media (max-width: 520px) {
+  #iconGrid {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    grid-auto-rows: 96px;
+  }
+  .window {
+    left: 10px;
+    top: 10px;
+  }
+}
