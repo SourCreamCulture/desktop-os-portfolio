@@ -732,10 +732,28 @@ elStartBtn.addEventListener("click", (e) => {
   toggleStartMenu();
 });
 
+function setTheme(theme) {
+  const t = theme || "nebula";
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem("dallinos-theme", t);
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem("dallinos-theme");
+  setTheme(saved || "nebula");
+}
+
 elStartMenu.addEventListener("click", (e) => {
   const openBtn = e.target.closest("[data-open]");
   if (openBtn) {
     openFile(openBtn.dataset.open);
+    closeStartMenu();
+    return;
+  }
+
+  const themeBtn = e.target.closest("[data-theme]");
+  if (themeBtn?.dataset.theme) {
+    setTheme(themeBtn.dataset.theme);
     closeStartMenu();
     return;
   }
@@ -809,6 +827,7 @@ elSpotlight?.addEventListener("click", (e) => {
   if (e.target === elSpotlight) closeSpotlight();
 });
 
+loadTheme();
 renderIcons();
 setInterval(tickClock, 1000);
 tickClock();
